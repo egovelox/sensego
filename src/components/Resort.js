@@ -23,7 +23,7 @@ class Resort extends Component {
       <Card style={{ margin: ".5rem", height: "30rem"}}>
         <CardImg top width="100%" height="190px" src={image} onError={this.defaultSrcImg} alt="Resort image" />
         <CardBody>
-          <CardTitle style={{height: "5rem", overflow: "hidden"}} className="h3 mb-2 pt-2 font-weight-bold text-secondary">
+          <CardTitle style={{height: "4.8rem", overflow: "hidden"}} className="h3 mb-2 pt-2 font-weight-bold text-secondary">
             {name}
           </CardTitle>
           <CardSubtitle
