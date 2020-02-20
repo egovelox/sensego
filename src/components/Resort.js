@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 import {
   Button,
-  UncontrolledAlert,
   Card,
   CardImg,
   CardBody,
