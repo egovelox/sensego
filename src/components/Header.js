@@ -52,10 +52,14 @@ const Header = () => (
           </Col>
           
           <Col className="d-none d-lg-flex justify-content-end">
-            <Form inline>
-              <Input type="search" className="mr-3" placeholder="Search Resorts" />
-              <Button type="submit" color="info" outline>Search</Button>
-            </Form>
+            <div className="input-group" style={{position: 'relative'}}>
+            <Input type="search" id='searchInput' className="form-control" placeholder="Search destination country" style={{ marginRight: 0}}/>
+            <div className="input-group-append">
+              <button className="btn btn-secondary" type="button" id="searchButton">
+                <i className="fa fa-search"></i>
+              </button>
+            </div>
+            </div>           
           </Col>
           
         </Row>
@@ -66,3 +70,5 @@ const Header = () => (
 );
 
 export default Header;
+
+            /*<Button id='searchButton' color="info" outline>Search</Button> */  

@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+.form-control:focus{
+  border-color: #cccccc;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;

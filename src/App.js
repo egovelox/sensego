@@ -12,15 +12,11 @@ class App extends Component {
     super(props);
     this.state = {
       resorts: [],
+      countries: [],
+      resortsQuery: [],
       showedItems: 0,
       isLoading: false
     };
-
-    axios.get('resorts.json')
-    .then(response => {
-      console.log(response.data.entities);
-      this.setState({ resorts: response.data.entities })
-    })
 
     window.onscroll = () => {
       const {
@@ -32,27 +28,73 @@ class App extends Component {
           loadResorts();
         }
     };
+
+    //this.getSearch = this.getSearch.bind(this);
   }
 
-  componentWillMount(){
+  componentDidMount(){
+    axios.get('resorts.json')
+    .then(response => {
+      this.setState({ resorts: response.data.entities, resortsQuery: response.data.entities });
+      this.searchByCountry();
+      console.log(this.state.resorts, this.state.countries)
+    })
     this.loadResorts();
+    this.getSearch();
   }
 
   loadResorts = () => {
     this.setState({showedItems : this.state.showedItems + 24})
   }
 
+  searchByCountry = () => {
+    let countriesArray = this.state.resorts
+    .map(resort => {
+      return resort.Category_1;
+    })
+    .reduce((unique, item) => {
+      return unique.includes(item) ? unique : [...unique, item]
+    }, []);
+    this.setState({countries: countriesArray});
+  }
+
+  getSearch = () => {
+    const searchInput = document.querySelector('#searchInput');
+    //const searchButton = document.querySelector('#searchButton');
+    /* searchInput.addEventListener('input', () => {
+      let value = searchInput.value;
+      console.log(this.state.countries);
+      this.setState({countries : this.state.countries.filter(country => country.Category_1 === value)});
+      console.log(this.state.countries);
+    }) */
+
+    searchInput.addEventListener('change', ()=> {
+      let value = searchInput.value;
+      console.log(value);
+      const {resorts} = this.state;
+
+      let resortsFiltered = [];
+      resortsFiltered = resorts
+      .filter((resort) => {
+        return (value === "" || resort.Category_1 === value)}
+        );
+      this.setState({resortsQuery : resortsFiltered});
+
+    }, true);
+  }
+
+
   render(){
-    const {resorts, showedItems} = this.state; 
+    const {resortsQuery, showedItems} = this.state; 
     return(
       <div className="App">
         <Header />
       <main className="my-5 py-5">
         <Container className="px-0">
         <Row noGutters className="pt-2 pt-md-5 w-100 px-4 px-xl-0 position-relative">
-        {resorts.slice(0, showedItems).map((resort, index) => (
+        {resortsQuery.slice(0, showedItems).map((resort, index) => (
           <Col key={index} xs={{ order: 2 }} md={{ size: 3, order: 1 }} tag="aside" className="pb-5 mb-5 pb-md-0 mb-md-0 mx-auto mx-md-0">
-          <Resort 
+          <Resort
             name={resort.Offer_Name}
             image={resort.Image}
             text={resort.Text}
