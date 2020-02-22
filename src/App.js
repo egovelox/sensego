@@ -10,70 +10,79 @@ class App extends Component {
 
   constructor(props){
     super(props);
+
+  
     this.state = {
       resorts: [],
       countries: [],
       resortsQuery: [],
       showedItems: 0,
       isLoading: false,
-      suggestion: ''
+      suggestion: []
     };
 
+    // Infinite Scrolling Handler
     window.onscroll = () => {
-      const {
-        loadResorts
-      } = this;
+
+      const {loadResorts} = this;
 
       if(window.innerHeight + document.documentElement.scrollTop
         === document.documentElement.offsetHeight){
           loadResorts();
         }
     };
-
-    //this.getSearch = this.getSearch.bind(this);
   }
 
   componentDidMount(){
+
     axios.get('resorts.json')
     .then(response => {
       this.setState({ resorts: response.data.entities, resortsQuery: response.data.entities });
+      
+      // Store list of country
       this.searchByCountry();
-      console.log(this.state.resorts, this.state.countries)
-    })
+    });
+
+    // Initial loading
     this.loadResorts();
-    //this.getSearch();
   }
 
+// Incrementing the displayed items on event 'scroll'
   loadResorts = () => {
     this.setState({showedItems : this.state.showedItems + 24})
   }
 
+// Building an array of countries
   searchByCountry = () => {
+
     let countriesArray = this.state.resorts
-    .map(resort => {
-      return resort.Category_1;
-    })
-    .reduce((unique, item) => {
-      return unique.includes(item) ? unique : [...unique, item]
-    }, []);
+    .map(resort => resort.Category_1)
+    .reduce((unique, item) => unique.includes(item) ? unique : [...unique, item], []);
+
+    //remove the #31 which is undefined and causes error...
     countriesArray.splice(31, 1);
+
     this.setState({countries: countriesArray});
   }
 
+// Displaying suggestions when user is filling input
    suggestInputHandler = (event) => {
-      let value = event.target.value;
-      let state2 = this.state.countries.slice();
-      state2 = state2.filter(country => country.toLowerCase().includes(value.toLowerCase()));
-      //this.setState({countries : state2});
-      console.log(state2);
-      if(value.length>0){
-      if (state2.length <=5){
-        let str = state2.join(' ');
-        this.setState({suggestion: str});
-      }}
-      else{ this.setState({suggestion: ''})}
+      let inputValue = event.target.value;
+      let countries = this.state.countries.slice();
+      countries = countries.filter(country => country.toLowerCase().includes(inputValue.trim().toLowerCase()));
+      console.log(countries);
+      if(inputValue.length>0) 
+      {
+        if (countries.length <=5)
+        {
+        this.setState({suggestion: countries});
+        }
+      }
+      else
+      { this.setState({suggestion: ['']})}
   }
 
+// Loading resorts of a user-input, if clicked on search icon
   searchInputHandler = () => {
     const {resorts} = this.state;
     const value = document.getElementById('searchInput').value;
@@ -87,22 +96,43 @@ class App extends Component {
         return (value === "" || resort.Category_1.toLowerCase() === value.toLowerCase())}
         );  
     this.setState({resortsQuery : resortsFiltered});
-    this.setState({suggestion: ''});
+    this.setState({suggestion: ['']});
   }
 
+// Loading resorts of a suggestion, if clicked on suggestion
+  searchSuggestHandler = (event) => {
+    const {resorts} = this.state;
+    let resortsSafe = resorts;
+    for(let i=0; i < resortsSafe.length; i++ ){
+      if (resortsSafe[i].Category_1 == undefined){
+        resortsSafe[i].Category_1 = ''
+      }
+    }    
+    let resortsFiltered = resortsSafe.filter((resort) => {
+        return (resort.Category_1 === event.target.innerHTML)}
+        );  
+
+    this.setState({resortsQuery : resortsFiltered});
+    // replacing the input with the clicked suggestion
+    document.getElementById('searchInput').value = event.target.innerHTML
+    this.setState({suggestion: ['']});
+  }
 
   render(){
     const {resortsQuery, showedItems} = this.state; 
     return(
       <div className="App">
         <Header 
-        inputChangedHandler = {() => this.searchInputHandler()}
-        inputSuggestedHandler = {(event) => this.suggestInputHandler(event)}
-        inputSuggestion = {this.state.suggestion}
+        searchInputHandler = {() => this.searchInputHandler()}
+        suggestInputHandler = {(event) => this.suggestInputHandler(event)}
+        suggestion = {this.state.suggestion}
+        searchSuggestHandler = {(event) => this.searchSuggestHandler(event)}
         />
       <main className="my-5 py-5">
         <Container className="px-0">
         <Row noGutters className="pt-2 pt-md-5 w-100 px-4 px-xl-0 position-relative">
+        {/* Only displaying a slice of the resorts array, 
+        infinite scrolling doing the rest*/}
         {resortsQuery.slice(0, showedItems).map((resort, index) => (
           <Col key={index} xs={{ order: 2 }} md={{ size: 3, order: 1 }} tag="aside" className="pb-5 mb-5 pb-md-0 mb-md-0 mx-auto mx-md-0">
           <Resort

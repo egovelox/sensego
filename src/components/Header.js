@@ -52,11 +52,12 @@ const Header = (props) => (
           </Col>
           
           <Col className="d-none d-lg-flex justify-content-end">
-            <Input type="search" id='searchInput' className="form-control" placeholder="Search destination country" style={{ marginRight: 0}} onInput={props.inputSuggestedHandler}/>
-            <button style={{position: 'absolute', right: 0}}className="btn btn-secondary" type="button" id="searchButton" onClick={props.inputChangedHandler}>
+            <Input type="search" id='searchInput' className="form-control" placeholder="Search destination country" style={{ marginRight: 0}} onInput={props.suggestInputHandler}/>
+            <button style={{position: 'absolute', right: 0}}className="btn btn-secondary" type="button" id="searchButton" onClick={props.searchInputHandler}>
                 <i className="fa fa-search"></i>
             </button>      
-            <small style={{fontWeight: 'bold', position: 'absolute', left: '1rem', bottom: -20}}>{props.inputSuggestion}</small>
+            <small style={{fontWeight: 'bold', position: 'absolute', left: '.9rem', bottom: -20}}>
+{props.suggestion.map(sugg => <span><a onClick={props.searchSuggestHandler} style={{cursor: 'pointer'}}>{sugg}</a> </span>)}</small>
           </Col>
           
         </Row>
