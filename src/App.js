@@ -15,7 +15,8 @@ class App extends Component {
       countries: [],
       resortsQuery: [],
       showedItems: 0,
-      isLoading: false
+      isLoading: false,
+      suggestion: ''
     };
 
     window.onscroll = () => {
@@ -40,7 +41,7 @@ class App extends Component {
       console.log(this.state.resorts, this.state.countries)
     })
     this.loadResorts();
-    this.getSearch();
+    //this.getSearch();
   }
 
   loadResorts = () => {
@@ -55,32 +56,38 @@ class App extends Component {
     .reduce((unique, item) => {
       return unique.includes(item) ? unique : [...unique, item]
     }, []);
+    countriesArray.splice(31, 1);
     this.setState({countries: countriesArray});
   }
 
-  getSearch = () => {
-    const searchInput = document.querySelector('#searchInput');
-    //const searchButton = document.querySelector('#searchButton');
-    /* searchInput.addEventListener('input', () => {
-      let value = searchInput.value;
-      console.log(this.state.countries);
-      this.setState({countries : this.state.countries.filter(country => country.Category_1 === value)});
-      console.log(this.state.countries);
-    }) */
+   suggestInputHandler = (event) => {
+      let value = event.target.value;
+      let state2 = this.state.countries.slice();
+      state2 = state2.filter(country => country.toLowerCase().includes(value.toLowerCase()));
+      //this.setState({countries : state2});
+      console.log(state2);
+      if(value.length>0){
+      if (state2.length <=5){
+        let str = state2.join(' ');
+        this.setState({suggestion: str});
+      }}
+      else{ this.setState({suggestion: ''})}
+  }
 
-    searchInput.addEventListener('change', ()=> {
-      let value = searchInput.value;
-      console.log(value);
-      const {resorts} = this.state;
-
-      let resortsFiltered = [];
-      resortsFiltered = resorts
-      .filter((resort) => {
-        return (value === "" || resort.Category_1 === value)}
-        );
-      this.setState({resortsQuery : resortsFiltered});
-
-    }, true);
+  searchInputHandler = () => {
+    const {resorts} = this.state;
+    const value = document.getElementById('searchInput').value;
+    let resortsSafe = resorts;
+    for(let i=0; i < resortsSafe.length; i++ ){
+      if (resortsSafe[i].Category_1 == undefined){
+        resortsSafe[i].Category_1 = ''
+      }
+    }    
+    let resortsFiltered = resortsSafe.filter((resort) => {
+        return (value === "" || resort.Category_1.toLowerCase() === value.toLowerCase())}
+        );  
+    this.setState({resortsQuery : resortsFiltered});
+    this.setState({suggestion: ''});
   }
 
 
@@ -88,7 +95,11 @@ class App extends Component {
     const {resortsQuery, showedItems} = this.state; 
     return(
       <div className="App">
-        <Header />
+        <Header 
+        inputChangedHandler = {() => this.searchInputHandler()}
+        inputSuggestedHandler = {(event) => this.suggestInputHandler(event)}
+        inputSuggestion = {this.state.suggestion}
+        />
       <main className="my-5 py-5">
         <Container className="px-0">
         <Row noGutters className="pt-2 pt-md-5 w-100 px-4 px-xl-0 position-relative">

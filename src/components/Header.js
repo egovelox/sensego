@@ -9,7 +9,7 @@ import {
 
 const AVATAR = 'https://www.gravatar.com/avatar/429e504af19fc3e1cfa5c4326ef3394c?s=240&d=mm&r=pg';
 
-const Header = () => (
+const Header = (props) => (
   <header>
     <Navbar fixed="top" color="light" light expand="xs" className="border-bottom border-gray bg-white" style={{ height: 80 }}>
     
@@ -52,14 +52,11 @@ const Header = () => (
           </Col>
           
           <Col className="d-none d-lg-flex justify-content-end">
-            <div className="input-group" style={{position: 'relative'}}>
-            <Input type="search" id='searchInput' className="form-control" placeholder="Search destination country" style={{ marginRight: 0}}/>
-            <div className="input-group-append">
-              <button className="btn btn-secondary" type="button" id="searchButton">
+            <Input type="search" id='searchInput' className="form-control" placeholder="Search destination country" style={{ marginRight: 0}} onInput={props.inputSuggestedHandler}/>
+            <button style={{position: 'absolute', right: 0}}className="btn btn-secondary" type="button" id="searchButton" onClick={props.inputChangedHandler}>
                 <i className="fa fa-search"></i>
-              </button>
-            </div>
-            </div>           
+            </button>      
+            <small style={{fontWeight: 'bold', position: 'absolute', left: '1rem', bottom: -20}}>{props.inputSuggestion}</small>
           </Col>
           
         </Row>
