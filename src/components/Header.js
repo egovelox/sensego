@@ -7,9 +7,26 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap';
 
+import './Header.css'
+
 const AVATAR = 'https://www.gravatar.com/avatar/429e504af19fc3e1cfa5c4326ef3394c?s=240&d=mm&r=pg';
 
-const Header = (props) => (
+const Header = (props) => {
+  
+  let suggestionListStyle = {
+    backgroundColor: "white", 
+    textAlign: 'left', 
+    display: 'flex', 
+    flexDirection: 'column', 
+    fontWeight: 'bold', 
+    position: 'absolute', 
+    left: '0rem', 
+    top: 40,
+    border: '1px solid #ced4da',
+    borderRadius: '.25rem',
+  }
+    
+return(
   <header>
     <Navbar fixed="top" color="light" light expand="xs" className="border-bottom border-gray bg-white" style={{ height: 80 }}>
     
@@ -51,13 +68,24 @@ const Header = (props) => (
             </NavbarBrand>
           </Col>
           
-          <Col className="d-none d-lg-flex justify-content-end">
-            <Input type="search" id='searchInput' className="form-control" placeholder="Search destination country" style={{ marginRight: 0}} onInput={props.suggestInputHandler}/>
+          <Col style={{}} className="d-none d-lg-flex justify-content-end">
+            <Input type="search" id='searchInput' className="form-control" placeholder="Search destination country" style={{ marginRight: 0, position: 'relative'}} onChange={props.suggestInputHandler}/>
             <button style={{position: 'absolute', right: 0}}className="btn btn-secondary" type="button" id="searchButton" onClick={props.searchInputHandler}>
                 <i className="fa fa-search"></i>
-            </button>      
-            <small style={{fontWeight: 'bold', position: 'absolute', left: '.9rem', bottom: -20}}>
-{props.suggestion.map(sugg => <span><a onClick={props.searchSuggestHandler} style={{cursor: 'pointer'}}>{sugg}</a> </span>)}</small>
+            </button>
+            <small style={suggestionListStyle}>
+              {props.suggestion.length !== 0 ? 
+              <span 
+              style={{textAlign: 'center', color: '#ccc', borderBottom: '1px solid #ced4da'}}>Suggestions
+              </span> 
+              : null}
+
+              {props.suggestion.map((sugg,index) => 
+              <span id ='hooverBlue' key={index} style={{width: '380px'}}>
+                <a onClick={props.searchSuggestHandler} style={{ margin: '5px 5px', cursor: 'pointer'}}>{sugg}
+                </a>
+              </span>)}
+            </small>
           </Col>
           
         </Row>
@@ -66,6 +94,7 @@ const Header = (props) => (
     </Navbar>
   </header>
 );
+}
 
 export default Header;
 

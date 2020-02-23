@@ -17,7 +17,6 @@ class App extends Component {
       countries: [],
       resortsQuery: [],
       showedItems: 0,
-      isLoading: false,
       suggestion: []
     };
 
@@ -48,8 +47,11 @@ class App extends Component {
   }
 
 // Incrementing the displayed items on event 'scroll'
+// Here we pass prevState for async purpose (this.setState is async)
   loadResorts = () => {
-    this.setState({showedItems : this.state.showedItems + 24})
+    this.setState((prevState) => {
+      return {showedItems : prevState.showedItems + 24}
+    })
   }
 
 // Building an array of countries
@@ -73,13 +75,12 @@ class App extends Component {
       console.log(countries);
       if(inputValue.length>0) 
       {
-        if (countries.length <=5)
-        {
-        this.setState({suggestion: countries});
-        }
+        
+        this.setState({suggestion: countries.slice(0, 20)});
+        
       }
       else
-      { this.setState({suggestion: ['']})}
+      { this.setState({suggestion: []})}
   }
 
 // Loading resorts of a user-input, if clicked on search icon
@@ -88,7 +89,7 @@ class App extends Component {
     const value = document.getElementById('searchInput').value;
     let resortsSafe = resorts;
     for(let i=0; i < resortsSafe.length; i++ ){
-      if (resortsSafe[i].Category_1 == undefined){
+      if (resortsSafe[i].Category_1 === undefined){
         resortsSafe[i].Category_1 = ''
       }
     }    
@@ -96,7 +97,7 @@ class App extends Component {
         return (value === "" || resort.Category_1.toLowerCase() === value.toLowerCase())}
         );  
     this.setState({resortsQuery : resortsFiltered});
-    this.setState({suggestion: ['']});
+    this.setState({suggestion: []});
   }
 
 // Loading resorts of a suggestion, if clicked on suggestion
@@ -104,7 +105,7 @@ class App extends Component {
     const {resorts} = this.state;
     let resortsSafe = resorts;
     for(let i=0; i < resortsSafe.length; i++ ){
-      if (resortsSafe[i].Category_1 == undefined){
+      if (resortsSafe[i].Category_1 === undefined){
         resortsSafe[i].Category_1 = ''
       }
     }    
@@ -115,10 +116,11 @@ class App extends Component {
     this.setState({resortsQuery : resortsFiltered});
     // replacing the input with the clicked suggestion
     document.getElementById('searchInput').value = event.target.innerHTML
-    this.setState({suggestion: ['']});
+    this.setState({suggestion: []});
   }
 
   render(){
+    
     const {resortsQuery, showedItems} = this.state; 
     return(
       <div className="App">
