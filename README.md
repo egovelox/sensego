@@ -1,1 +1,1 @@
-# Exercice en React pour Sensego (affichage de sejours hôteliers)
+# Exercice en React pour Sensego (affichage de séjours hôteliers)
