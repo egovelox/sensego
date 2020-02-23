@@ -142,6 +142,8 @@ class App extends Component {
             image={resort.Image}
             text={resort.Text}
             place={resort.Category_1 + " - " + resort.Category_2 }
+            price={resort.Nigths + " " + resort.Price}
+            promo={resort.promotion}
           />
         </Col>
         ))}
