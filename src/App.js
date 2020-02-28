@@ -119,6 +119,19 @@ class App extends Component {
     this.setState({suggestion: []});
   }
 
+// reduceText
+ reduceText = (text, limit) => {
+   const newText = [];
+   text.split(' ').reduce((acc, word) => {
+      if(acc + word.length <= limit){
+        newText.push(word);
+      }
+      return acc + word.length
+   }, 0);
+
+   return newText.join(' ') + ' ...'
+ }
+
   render(){
     
     const {resortsQuery, showedItems} = this.state; 
@@ -140,7 +153,8 @@ class App extends Component {
           <Resort
             name={resort.Offer_Name}
             image={resort.Image}
-            text={resort.Text}
+            fullText={resort.Text}
+            text={this.reduceText(resort.Text, 80)}
             place={resort.Category_1 + " - " + resort.Category_2 }
             price={resort.Nigths + " " + resort.Price}
             promo={resort.promotion}

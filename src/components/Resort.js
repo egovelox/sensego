@@ -11,6 +11,8 @@ import {
   CardText
 } from "reactstrap";
 
+import ResortDetails from "./ResortDetails";
+
 class Resort extends Component {
 
     defaultSrcImg(ev){
@@ -18,7 +20,7 @@ class Resort extends Component {
     }
 
     render() {
-    const { name, image, place, text, price, promo } = this.props;
+    const { name, image, place, text, price, promo, fullText } = this.props;
 
     let trianglePromo = promo !== "0%" ? 
     <Fragment><p className="promotionTriangle"></p><span className='promotionRate'>{promo}</span></Fragment> : null
@@ -48,12 +50,12 @@ class Resort extends Component {
             style={{ fontSize: "0.8rem" }}>
             {price}
           </CardSubtitle>
-          <Button 
-            className="font-weight-bold"
-            color="success"
-            style={{position: "absolute", bottom: '1rem', right: "5rem", border: '1px solid #6c757d'}}>
-            View Offer
-          </Button>
+          <ResortDetails
+          fullText={fullText}
+          name={name}
+          image={image}
+          >
+          </ResortDetails>
         </CardBody>
       </Card>
     );
